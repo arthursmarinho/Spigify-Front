@@ -18,30 +18,30 @@ interface Track {
 }
 
 type Props = {
-  params: {
-    id: string;
-  };
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = params;
+
   return {
-    title: `Álbum ${params.id}`,
+    title: `Álbum ${id}`,
   };
 }
 
 export default async function AlbumPage({ params }: Props) {
+  const { id } = params;
+
   const res = await fetch(
-    `https://spigify-back.onrender.com/music/album/${params.id}`
+    `https://spigify-back.onrender.com/music/album/${id}`
   );
 
   if (!res.ok) return notFound();
 
   const data: Album = await res.json();
-  const durationMinutes = (data.duration / 60).toFixed(1);
 
-  const tracksRes = await fetch(
-    `https://api.deezer.com/album/${params.id}/tracks`
-  );
+  const tracksRes = await fetch(`https://api.deezer.com/album/${id}/tracks`);
   const tracksData = await tracksRes.json();
   const tracks: Track[] = tracksData.data;
 
