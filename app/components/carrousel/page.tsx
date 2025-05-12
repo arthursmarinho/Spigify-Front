@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Metadata } from "next";
 
 interface Album {
   id: number;
@@ -21,13 +20,6 @@ type Props = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  return {
-    title: `Álbum ${id}`,
-  };
-}
 
 export default async function AlbumPage({ params }: Props) {
   const { id } = await params;
