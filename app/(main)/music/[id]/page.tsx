@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Metadata } from "next";
 
 interface Album {
   id: number;
@@ -16,13 +17,19 @@ interface Track {
   duration: number;
 }
 
-interface AlbumPageProps {
+type Props = {
   params: {
     id: string;
   };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: `Álbum ${params.id}`,
+  };
 }
 
-export default async function AlbumPage({ params }: AlbumPageProps) {
+export default async function AlbumPage({ params }: Props) {
   const res = await fetch(
     `https://spigify-back.onrender.com/music/album/${params.id}`
   );
