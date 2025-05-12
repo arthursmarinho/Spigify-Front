@@ -22,8 +22,8 @@ const CompanyCarousel = () => {
 
         const responses = await Promise.all(
           albumIds.map((id) =>
-            fetch(`http://localhost:3000/music/album/${id}`).then((res) =>
-              res.json()
+            fetch(`https://spigify-back.onrender.com/music/album/${id}`).then(
+              (res) => res.json()
             )
           )
         );

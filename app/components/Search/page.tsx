@@ -29,7 +29,7 @@ export default function SearchMusic() {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/music/search/${searchTerm}`
+        `https://spigify-back.onrender.com/music/search/${searchTerm}`
       );
       const data = await response.json();
       setResults(data);

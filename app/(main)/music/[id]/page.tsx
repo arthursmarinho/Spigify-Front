@@ -23,7 +23,9 @@ interface AlbumPageProps {
 }
 
 export default async function AlbumPage({ params }: AlbumPageProps) {
-  const res = await fetch(`http://localhost:3000/music/album/${params.id}`);
+  const res = await fetch(
+    `https://spigify-back.onrender.com/music/album/${params.id}`
+  );
 
   if (!res.ok) return notFound();
 
