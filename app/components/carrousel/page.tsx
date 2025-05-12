@@ -1,85 +1,70 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { Carousel, CarouselContent, CarouselItem } from "../carousel";
-import Autoplay from "embla-carousel-autoplay";
+import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Metadata } from "next";
 
 interface Album {
   id: number;
   title: string;
-  cover: string;
+  cover_big: string;
+  duration: number;
+  release_date: number;
 }
 
-const CompanyCarousel = () => {
-  const [data, setData] = useState<Album[]>([]);
+interface Track {
+  id: number;
+  title: string;
+  preview: string;
+  duration: number;
+}
 
-  useEffect(() => {
-    async function fetchAlbums() {
-      try {
-        const albumIds = [390984, 91973, 620594, 708679, 11666166, 64572632];
-
-        const responses = await Promise.all(
-          albumIds.map((id) =>
-            fetch(`https://spigify-back.onrender.com/music/album/${id}`).then(
-              (res) => res.json()
-            )
-          )
-        );
-
-        const albums: Album[] = responses.map((album) => ({
-          id: album.id,
-          title: album.title,
-          cover: album.cover,
-        }));
-
-        setData(albums);
-      } catch (error) {
-        console.error("Erro ao carregar álbuns:", error);
-      }
-    }
-
-    fetchAlbums();
-  }, []);
-
-  if (data.length === 0) return <div>Carregando...</div>;
-
-  return (
-    <Carousel
-      plugins={[
-        Autoplay({
-          delay: 1000,
-        }),
-      ]}
-      className="w-full bg-white text-black py-8"
-    >
-      <div className="mb-4">
-        <h1 className="text-xl font-medium flex justify-start">
-          Popular Albums
-        </h1>
-      </div>
-      <CarouselContent>
-        {data.map((item) => (
-          <Link key={item.id} href={`/music/${item.id}`}>
-            <CarouselItem>
-              <div className="flex flex-col items-center">
-                <Image
-                  src={item.cover}
-                  alt={item.title}
-                  width={300}
-                  height={300}
-                  className="rounded-full transition-transform duration-700 hover:scale-105"
-                  quality={100}
-                />
-                <h2 className="mt-2 text-sm text-black">{item.title}</h2>
-              </div>
-            </CarouselItem>
-          </Link>
-        ))}
-      </CarouselContent>
-    </Carousel>
-  );
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default CompanyCarousel;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  return {
+    title: `Álbum ${id}`,
+  };
+}
+
+export default async function AlbumPage({ params }: Props) {
+  const { id } = await params;
+
+  const res = await fetch(
+    `https://spigify-back.onrender.com/music/album/${id}`
+  );
+
+  if (!res.ok) return notFound();
+
+  const data: Album = await res.json();
+  const durationMinutes = (data.duration / 60).toFixed(1);
+
+  const tracksRes = await fetch(`https://api.deezer.com/album/${id}/tracks`);
+  const tracksData = await tracksRes.json();
+  const tracks: Track[] = tracksData.data;
+
+  return (
+    <div className="mt-8 px-4 text-black bg-white">
+      <Link href="/dashboard" className="text-lg underline">
+        Back to search
+      </Link>
+      <h2 className="text-base font-semibold mt-6 mb-4">Músicas</h2>
+      <ul className="space-y-2 max-w-2xl">
+        {tracks.map((track) => (
+          <li
+            key={track.id}
+            className="border border-black rounded p-3 flex flex-col sm:flex-row sm:items-center justify-between"
+          >
+            <span className="text-sm">{track.title}</span>
+            <audio controls className="mt-2">
+              <source src={track.preview} type="audio/mpeg" />
+              Seu navegador não suporta áudio.
+            </audio>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
