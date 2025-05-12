@@ -16,17 +16,18 @@ interface Track {
   duration: number;
 }
 
-export default async function AlbumPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface AlbumPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function AlbumPage({ params }: AlbumPageProps) {
   const res = await fetch(`http://localhost:3000/music/album/${params.id}`);
 
   if (!res.ok) return notFound();
 
   const data: Album = await res.json();
-
   const durationMinutes = (data.duration / 60).toFixed(1);
 
   const tracksRes = await fetch(
