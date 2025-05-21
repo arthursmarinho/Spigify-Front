@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "../button";
 import { Input } from "../input";
 import { toast } from "react-toastify";
@@ -13,14 +12,25 @@ interface Album {
   cover_big: string;
 }
 
+interface Track {
+  id: number;
+  title: string;
+  preview: string;
+  duration: number;
+}
+
 export default function SearchMusic() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<Album[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [tracks, setTracks] = useState<Track[]>([]);
 
   async function handleSearchAlbum(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
+    setSelectedAlbum(null);
+    setTracks([]);
+
     if (!searchTerm.trim()) {
       toast.error("Search something to start...");
       return;
@@ -29,7 +39,7 @@ export default function SearchMusic() {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://spigify-back.onrender.com/music/search/${searchTerm}`
+        `http://localhost:3000/music/search/${searchTerm}`
       );
       const data = await response.json();
       setResults(data);
@@ -38,10 +48,25 @@ export default function SearchMusic() {
         toast.error("Nothing found...");
       }
     } catch (error) {
-      toast.error("Search something to start...");
+      toast.error("Error during search.");
       console.error("Error:", error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSelectAlbum(album: Album) {
+    setSelectedAlbum(album);
+    setTracks([]);
+    try {
+      const response = await fetch(
+        `https://api.deezer.com/album/${album.id}/tracks`
+      );
+      const data = await response.json();
+      setTracks(data.data);
+    } catch (error) {
+      toast.error("Failed to fetch album tracks.");
+      console.error("Tracks fetch error:", error);
     }
   }
 
@@ -56,32 +81,66 @@ export default function SearchMusic() {
           className="rounded-full bg-gray-800/30 backdrop-blur-lg border-0"
         />
         <Button variant="default" type="submit">
-          Search..
+          {loading ? "Loading..." : "Search"}
         </Button>
       </form>
 
-      <div className="grid grid-cols-2 gap-4">
-        {results.slice(0, 6).map((album) => (
-          <Link key={album.id} href={`/music/${album.id}`}>
-            <div
+      {!selectedAlbum && (
+        <div className="grid grid-cols-2 gap-4">
+          {results.slice(0, 6).map((album) => (
+            <button
               key={album.id}
-              className="bg-white/25 rounded-2xl shadow-md p-4 hover:shadow-lg transition"
+              onClick={() => handleSelectAlbum(album)}
+              className="bg-white/25 rounded-2xl shadow-md p-4 hover:shadow-lg transition text-left"
             >
               <Image
                 src={album.cover_big}
                 alt={album.title}
                 className="mb-2"
-                width={50}
-                height={50}
+                width={100}
+                height={100}
                 unoptimized
               />
               <h3 className="text-sm font-medium text-center text-black">
                 {album.title}
               </h3>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {selectedAlbum && (
+        <div className="mt-8">
+          <button
+            onClick={() => {
+              setSelectedAlbum(null);
+              setTracks([]);
+            }}
+            className="text-blue-600 underline mb-4 block"
+          >
+            ← Back to results
+          </button>
+
+          <h2 className="text-lg font-semibold mb-4 text-black">
+            {selectedAlbum.title}
+          </h2>
+
+          <ul className="space-y-2 max-w-2xl">
+            {tracks.map((track) => (
+              <li
+                key={track.id}
+                className="border border-black rounded p-3 flex flex-col sm:flex-row sm:items-center justify-between"
+              >
+                <span className="text-sm text-black">{track.title}</span>
+                <audio controls className="mt-2 sm:mt-0">
+                  <source src={track.preview} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -33,9 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AlbumPage({ params }: Props) {
   const { id } = params;
 
-  const res = await fetch(
-    `https://spigify-back.onrender.com/music/album/${id}`
-  );
+  const res = await fetch(`https://localhost:3000/music/album/${id}`);
 
   if (!res.ok) return notFound();
 
