@@ -1,10 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import {
-  doSignInWithGoogle,
-  doSignInWithEmailAndPassword,
-} from "../../../lib/firebase/auth";
+import { doSignInWithGoogle } from "../../../lib/firebase/auth";
 import { useAuth } from "../../contexts/authContext";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,7 +12,6 @@ export default function LoginPage() {
   const router = useRouter();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
@@ -44,8 +39,8 @@ export default function LoginPage() {
         .then(() => {
           router.push("/dashboard");
         })
-        .catch(() => {
-          setErrorMessage("Erro ao entrar com Google");
+        .catch((err) => {
+          console.log(err);
         })
         .finally(() => {
           setIsSigningIn(false);
@@ -55,25 +50,12 @@ export default function LoginPage() {
 
   return (
     <div className="relative w-full h-screen">
-      {/* Imagem de fundo */}
-      <Image
-        src="/LoginPage/hero.jpg"
-        alt="Imagem de login"
-        fill
-        className="object-cover"
-        priority
-      />
-
-      {/* Overlay escuro */}
       <div className="absolute inset-0 bg-black/40" />
-
-      {/* Conteúdo central */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-white px-4">
         <h1 className="text-4xl font-bold mb-4">Bem-vindo!</h1>
         <p className="mb-6 text-center max-w-md">
           Faça login com sua conta Google para continuar
         </p>
-
         <button
           onClick={onGoogleSignIn}
           className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"

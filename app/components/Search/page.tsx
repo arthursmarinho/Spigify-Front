@@ -60,7 +60,7 @@ export default function SearchMusic() {
     setTracks([]);
     try {
       const response = await fetch(
-        `https://api.deezer.com/album/${album.id}/tracks`
+        `http://localhost:3000/music/album/${album.id}/tracks`
       );
       const data = await response.json();
       setTracks(data.data);
