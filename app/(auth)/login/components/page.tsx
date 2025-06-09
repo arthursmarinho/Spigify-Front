@@ -1,7 +1,7 @@
 "use client";
 
-import { doSignInWithGoogle } from "../../../lib/firebase/auth";
-import { useAuth } from "../../contexts/authContext";
+import { doSignInWithGoogle } from "../../../../lib/firebase/auth";
+import { useAuth } from "../../../contexts/authContext";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getAuth, User } from "firebase/auth";

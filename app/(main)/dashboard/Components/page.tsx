@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "../button";
-import { Input } from "../input";
+import { Button } from "../../../components/button";
+import { Input } from "../../../components/input";
 import { toast } from "react-toastify";
 
 interface Album {
@@ -39,7 +39,7 @@ export default function SearchMusic() {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://spigify-back.onrender.com/music/search/${searchTerm}`
+        `http://localhost:3000/music/search/${searchTerm}`
       );
       const data = await response.json();
       setResults(data);
@@ -60,7 +60,7 @@ export default function SearchMusic() {
     setTracks([]);
     try {
       const response = await fetch(
-        `https://spigify-back.onrender.com/music/album/${album.id}/tracks`
+        `http://localhost:3000/music/album/${album.id}/tracks`
       );
       const data = await response.json();
       setTracks(data.data);

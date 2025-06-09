@@ -5,7 +5,7 @@ import { signOut, User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../lib/firebase/firebase";
 import { useRouter } from "next/navigation";
 import { Button } from "../../components/button";
-import SearchMusic from "../../components/Search/page";
+import SearchMusic from "./Components/page";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -56,6 +56,15 @@ export default function Dashboard() {
 
       <div className="max-w-5xl mx-auto">
         <SearchMusic />
+      </div>
+      <div className="w-[320px]">
+        <p>
+          Caro recrutador, como este site está hospedado em plataformas
+          gratuitas, o back-end e o front-end podem entrar em estado de
+          "hibernação" caso não sejam acessados com frequência. Portanto, caso a
+          pesquisa não funcione de imediato, peço que aguarde alguns instantes
+          para que o back-end seja reativado. Desde já, agradeço.
+        </p>
       </div>
     </div>
   );
