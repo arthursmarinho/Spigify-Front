@@ -39,7 +39,7 @@ export default function SearchMusic() {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/music/search/${searchTerm}`
+        `${process.env.NEXT_PUBLIC_API_URL}/music/search/${searchTerm}`
       );
       const data = await response.json();
       setResults(data);
@@ -60,7 +60,7 @@ export default function SearchMusic() {
     setTracks([]);
     try {
       const response = await fetch(
-        `http://localhost:3000/music/album/${album.id}/tracks`
+        `${process.env.NEXT_PUBLIC_API_URL}/music/album/${album.id}/tracks`
       );
       const data = await response.json();
       setTracks(data.data);
