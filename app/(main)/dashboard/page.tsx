@@ -37,34 +37,39 @@ export default function Dashboard() {
   if (loading) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 py-10 px-4">
-      <div className="flex justify-between items-center max-w-5xl mx-auto mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-blue-800">Buscar Músicas</h1>
-          {user && (
-            <p className="text-sm text-gray-700 mt-1">
-              Bem-vindo, <br />
-              <span className="font-semibold">
-                {user.displayName || user.email}
-              </span>
-            </p>
-          )}
+    <div className="min-h-screen bg-[#242734] text-white py-10 px-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Buscar Músicas</h1>
+            {user && (
+              <p className="text-sm text-gray-400 mt-1">
+                Bem-vindo, <br />
+                <span className="font-semibold text-[#FFC355]">
+                  {user.displayName || user.email}
+                </span>
+              </p>
+            )}
+          </div>
+
+          <Button onClick={handleLogout} className="mt-4 sm:mt-0">
+            Logout
+          </Button>
         </div>
 
-        <Button onClick={handleLogout}>Logout</Button>
-      </div>
+        <div className="bg-[#1a1c26] rounded-2xl p-6 shadow-lg">
+          <SearchMusic />
+        </div>
 
-      <div className="max-w-5xl mx-auto">
-        <SearchMusic />
-      </div>
-      <div className="w-[320px]">
-        <p>
-          Caro recrutador, como este site está hospedado em plataformas
-          gratuitas, o back-end e o front-end podem entrar em estado de
-          "hibernação" caso não sejam acessados com frequência. Portanto, caso a
-          pesquisa não funcione de imediato, peço que aguarde alguns instantes
-          para que o back-end seja reativado. Desde já, agradeço.
-        </p>
+        <div className="mt-10 bg-[#1a1c26] text-gray-300 text-sm p-4 rounded-lg max-w-md mx-auto">
+          <p>
+            Caro recrutador, como este site está hospedado em plataformas
+            gratuitas, o back-end e o front-end podem entrar em estado de
+            "hibernação" caso não sejam acessados com frequência. Portanto, caso
+            a pesquisa não funcione de imediato, peço que aguarde alguns
+            instantes para que o back-end seja reativado. Desde já, agradeço.
+          </p>
+        </div>
       </div>
     </div>
   );

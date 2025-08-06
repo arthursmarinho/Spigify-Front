@@ -118,10 +118,10 @@ export default function SearchMusic() {
             }}
             className="text-blue-600 underline mb-4 block"
           >
-            ← Back to results
+            ← Voltar para resultados
           </button>
 
-          <h2 className="text-lg font-semibold mb-4 text-black">
+          <h2 className="text-lg font-semibold mb-4 text-white">
             {selectedAlbum.title}
           </h2>
 
@@ -129,9 +129,9 @@ export default function SearchMusic() {
             {tracks.map((track) => (
               <li
                 key={track.id}
-                className="border border-black rounded p-3 flex flex-col sm:flex-row sm:items-center justify-between"
+                className="border border-[#FFC355] rounded p-3 flex flex-col sm:flex-row sm:items-center justify-between"
               >
-                <span className="text-sm text-black">{track.title}</span>
+                <span className="text-sm text-white">{track.title}</span>
                 <audio controls className="mt-2 sm:mt-0">
                   <source src={track.preview} type="audio/mpeg" />
                   Your browser does not support the audio element.
